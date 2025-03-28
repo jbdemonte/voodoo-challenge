@@ -63,8 +63,41 @@ Many other applications at Voodoo will use consume this API.
 We are planning to put this project in production. According to you, what are the missing pieces to make this project production ready? 
 Please elaborate an action plan.
 
+```
+Security
+- anyone can access the API and perform critical actions without any authentication.
+- there is no security against sql injection - no data validation / sanitizer
+- no rate limiting is in place (DDOS)
+
+Code quality & maintainability
+- all in a single file - hard to maintain
+- no separation of concerns between routes, business logic, and data access
+- no test coverage
+
+Performance & scalability
+- no cache
+- no pagination
+- no monitoring, no metrics
+- log are not structured
+
+Action plan
+- add authentication - add robust middleware (helmet, cors...)
+- add rate limiting
+- data validation / sanitization (validate entries - joi...) 
+- split the codebase into routes, controllers/services
+- define clear interfaces (DTOs) for input / output...
+- add tests and CI/CD
+- use redis (or any other cache system)
+- add pagination and sorting
+- use winston (or any other) to structure and manage the logs
+
+```
+
 #### Question 2:
 Let's pretend our data team is now delivering new files every day into the S3 bucket, and our service needs to ingest those files
 every day through the populate API. Could you describe a suitable solution to automate this? Feel free to propose architectural changes.
 
-
+```
+We can use AWS Lambda to automatically trigger when new files are uploaded to S3, process them, and send the data to the populate API.    
+To secure the data submission from AWS Lambda, we could add an authentication token in the request headers and configure the API to accept only requests containing this token, while ensuring all communication is over ssl.
+```
