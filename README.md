@@ -98,6 +98,10 @@ Let's pretend our data team is now delivering new files every day into the S3 bu
 every day through the populate API. Could you describe a suitable solution to automate this? Feel free to propose architectural changes.
 
 ```
-We can use AWS Lambda to automatically trigger when new files are uploaded to S3, process them, and send the data to the populate API.    
-To secure the data submission from AWS Lambda, we could add an authentication token in the request headers and configure the API to accept only requests containing this token, while ensuring all communication is over ssl.
+We can use AWS Lambda to automatically trigger when new files are uploaded to S3, 
+process them, and send the data to the populate API.    
+
+To secure the data submission from AWS Lambda, we could add an authentication token 
+in the request headers and configure the API to accept only requests containing this token, 
+while ensuring all communication is over ssl.
 ```
