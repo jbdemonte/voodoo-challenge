@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { Op } = require('sequelize');
 const db = require('./models');
 
 const app = express();
@@ -51,6 +52,36 @@ app.put('/api/games/:id', (req, res) => {
     });
 });
 
+app.post('/api/games/search', (req, res) => {
+  let { name, platform } = req.body;
+
+  const where = {};
+
+  // Normalize inputs
+  platform = (platform || '').trim().toLowerCase();
+  name = (name || '').trim().toLowerCase();
+
+  if (name && !platform) {
+    return res.status(400).json({ error: 'Platform is required when name is provided' });
+  }
+
+  // Populate where clause
+  if (platform) {
+    where.platform = platform;
+  }
+  if (name) {
+    where.name = {
+      [Op.like]: `%${name}%`,
+    };
+  }
+
+  return db.Game.findAll({ where })
+    .then((games) => res.send(games))
+    .catch((err) => {
+      console.log('***There was an error searching ', JSON.stringify(where));
+      return res.status(400).send(err);
+    });
+});
 
 app.listen(3000, () => {
   console.log('Server is up on port 3000');
